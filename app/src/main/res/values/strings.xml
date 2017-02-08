@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CDSimulator</string>
+
+    <string name="gear_P">P</string>
+    <string name="gear_D">D</string>
+    <string name="gear_N">N</string>
+    <string name="gear_R">R</string>
+    <string name="TextDisplay"></string>
+
+</resources>

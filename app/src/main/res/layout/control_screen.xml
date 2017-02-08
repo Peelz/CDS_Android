@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="moba.cds.ControlScreen"
+    android:orientation="horizontal" >
+
+    <!--Gear-->
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:adjustViewBounds="true"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:contentDescription="" />
+
+    <RelativeLayout
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/GearLayout">
+
+        <!--Gear P-->
+        <Button
+            android:id="@+id/button_gear_P"
+            android:textColor="#fff"
+            android:text="@string/gear_P"
+            android:onClick="setActiveGear"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/gear_button"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/button_gear_R" />
+
+
+        <!--Gear R-->
+        <Button
+            android:text="@string/gear_R"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:onClick="setActiveGear"
+
+            android:background="@drawable/gear_button"
+            android:layout_below="@+id/button_gear_P"
+            android:textColor="#fff"
+            android:id="@+id/button_gear_R"
+            android:layout_centerInParent="true"/>
+
+        <!--Gear N-->
+        <Button
+            android:id="@+id/button_gear_N"
+            android:textColor="#fff"
+            android:layout_marginTop="10dp"
+            android:text="@string/gear_N"
+            android:onClick="setActiveGear"
+
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/gear_button"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/button_gear_R" />
+
+        <!--Gear D-->
+        <Button
+            android:id="@+id/button_gear_D"
+            android:textColor="#fff"
+            android:layout_marginTop="10dp"
+            android:text="@string/gear_D"
+            android:onClick="setActiveGear"
+
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/gear_button"
+            android:layout_below="@+id/button_gear_N"
+            android:layout_alignStart="@+id/button_gear_N" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/Speed_button"
+        android:background="@drawable/circle"
+        android:gravity="bottom|center_vertical|center_horizontal"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginRight="5dp"
+        tools:ignore="RtlHardcoded"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="86dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/Break_button"
+        android:background="@drawable/circle"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginRight="172dp"
+        android:layout_alignTop="@+id/Speed_button"
+        android:layout_toStartOf="@+id/Speed_button"
+        android:layout_marginEnd="53dp"
+        tools:ignore="RtlHardcoded" />
+
+
+
+</RelativeLayout>
