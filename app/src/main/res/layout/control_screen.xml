@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:stream="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_layout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="moba.cds.ControlScreen"
+
     android:orientation="horizontal" >
 
     <!--Gear-->
 
-    <ImageView
+    <com.camera.MjpegView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:adjustViewBounds="true"
-        android:layout_centerInParent="true"
-        android:scaleType="centerCrop"
-        android:contentDescription="" />
+        android:id="@+id/cameraView"/>
 
     <RelativeLayout
         android:layout_width="120dp"
@@ -30,7 +29,7 @@
             android:id="@+id/button_gear_P"
             android:textColor="#fff"
             android:text="@string/gear_P"
-            android:onClick="setActiveGear"
+            android:onClick="gearHandler"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/gear_button"
@@ -44,7 +43,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
-            android:onClick="setActiveGear"
+            android:onClick="gearHandler"
 
             android:background="@drawable/gear_button"
             android:layout_below="@+id/button_gear_P"
@@ -58,7 +57,7 @@
             android:textColor="#fff"
             android:layout_marginTop="10dp"
             android:text="@string/gear_N"
-            android:onClick="setActiveGear"
+            android:onClick="gearHandler"
 
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -72,7 +71,7 @@
             android:textColor="#fff"
             android:layout_marginTop="10dp"
             android:text="@string/gear_D"
-            android:onClick="setActiveGear"
+            android:onClick="gearHandler"
 
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -84,6 +83,7 @@
 
     <Button
         android:id="@+id/Speed_button"
+        android:text="S"
         android:background="@drawable/circle"
         android:gravity="bottom|center_vertical|center_horizontal"
         android:layout_width="45dp"
@@ -97,6 +97,7 @@
 
     <Button
         android:id="@+id/Break_button"
+        android:text="B"
         android:background="@drawable/circle"
         android:layout_width="45dp"
         android:layout_height="45dp"
@@ -104,8 +105,17 @@
         android:layout_alignTop="@+id/Speed_button"
         android:layout_toStartOf="@+id/Speed_button"
         android:layout_marginEnd="53dp"
-        tools:ignore="RtlHardcoded" />
+        tools:ignore="RtlHardcoded"/>
 
+    <Switch
+        android:text="Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:id="@+id/switch1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="35dp" />
 
 
 </RelativeLayout>
