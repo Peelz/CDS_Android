@@ -91,21 +91,21 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        private Bitmap makeFpsOverlay(Paint p, String text) {
-            Rect b = new Rect();
-            p.getTextBounds(text, 0, text.length(), b);
-            int bwidth = b.width() + 2;
-            int bheight = b.height() + 2;
-            Bitmap bm = Bitmap.createBitmap(bwidth, bheight,
-                    Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(bm);
-            p.setColor(overlayBackgroundColor);
-            c.drawRect(0, 0, bwidth, bheight, p);
-            p.setColor(overlayTextColor);
-            c.drawText(text, -b.left + 1,
-                    (bheight / 2) - ((p.ascent() + p.descent()) / 2) + 1, p);
-            return bm;
-        }
+//        private Bitmap makeFpsOverlay(Paint p, String text) {
+//            Rect b = new Rect();
+//            p.getTextBounds(text, 0, text.length(), b);
+//            int bwidth = b.width() + 2;
+//            int bheight = b.height() + 2;
+//            Bitmap bm = Bitmap.createBitmap(bwidth, bheight,
+//                    Bitmap.Config.ARGB_8888);
+//            Canvas c = new Canvas(bm);
+//            p.setColor(overlayBackgroundColor);
+//            c.drawRect(0, 0, bwidth, bheight, p);
+//            p.setColor(overlayTextColor);
+//            c.drawText(text, -b.left + 1,
+//                    (bheight / 2) - ((p.ascent() + p.descent()) / 2) + 1, p);
+//            return bm;
+//        }
 
         @Override
         protected Void doInBackground(Void... params) {
