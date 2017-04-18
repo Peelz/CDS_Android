@@ -1,8 +1,6 @@
 package moba.cds;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -14,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.camera.MjpegView;
 
@@ -131,23 +128,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
     }
 
 
-    public void showDialog(){
-        AlertDialog.Builder builder =
-                new AlertDialog.Builder(this);
-        builder.setMessage("รับขนมจีบซาลาเปาเพิ่มมั้ยครับ?");
-        builder.setPositiveButton("รับ", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getApplicationContext(),
-                        "ขอบคุณครับ", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.setNegativeButton("ไม่รับ", null);
-        builder.create();
-
-        // สุดท้ายอย่าลืม show() ด้วย
-        builder.show();
-    }
     public int setAngle(int value){
         if(value <0 ){
             return 0 ;
