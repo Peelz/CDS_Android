@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import model.Constant;
+import constants.Constant;
 
 /**
  * Created by gutte on 4/10/2017.

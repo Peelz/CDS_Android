@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import moba.cds.ControlScreen;
 import moba.cds.R;
-import model.Constant;
+import constants.Constant;
 import socket.CommandSocket;
 import socket.DriverSocket;
 

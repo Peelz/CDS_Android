@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/GearLayout">
+        android:id="@+id/gear_layout">
 
         <!--Gear P-->
         <Button
@@ -81,41 +81,47 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/Speed_button"
-        android:text="S"
-        android:background="@drawable/circle"
-        android:gravity="bottom|center_vertical|center_horizontal"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginRight="5dp"
-        tools:ignore="RtlHardcoded"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="86dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:id="@+id/Break_button"
-        android:text="B"
-        android:background="@drawable/circle"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginRight="172dp"
-        android:layout_alignTop="@+id/Speed_button"
-        android:layout_toStartOf="@+id/Speed_button"
-        android:layout_marginEnd="53dp"
-        tools:ignore="RtlHardcoded"/>
-
     <Switch
-        android:text="Switch"
+        android:text="อุอุอิอิ"
+        android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="21dp"
-        android:id="@+id/switch1"
+        android:id="@+id/switch_control_mode"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="35dp" />
+
+    <GridLayout
+        android:id="@+id/driver_control_layout"
+        android:layout_width="140dp"
+        android:layout_height="60dp"
+        android:layout_alignEnd="@+id/switch_control_mode"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="45dp"
+        android:layout_marginRight="100dp"
+        android:layout_alignParentTop="true"
+        tools:ignore="RtlHardcoded">
+
+        <Button
+            android:id="@+id/Break_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_column="0"
+            android:layout_row="2"
+            android:background="@drawable/circle"
+            android:text="B" />
+
+        <Button
+            android:id="@+id/Speed_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_column="2"
+            android:layout_row="2"
+            android:background="@drawable/circle"
+            android:text="S" />
+    </GridLayout>
 
 
 </RelativeLayout>

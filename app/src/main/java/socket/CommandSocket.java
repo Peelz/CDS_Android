@@ -10,7 +10,7 @@ import java.net.Socket;
 
 import service.BackgroundTask;
 
-import static model.Constant.HOST;
+import static constants.Constant.HOST;
 
 /**
  * Created by gutte on 4/9/2017.

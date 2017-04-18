@@ -7,4 +7,6 @@
     <string name="gear_R">R</string>
     <string name="TextDisplay"></string>
 
+    <string name="mode_phone">Phone</string>
+    <string name="mode_simulator">Simulate</string>
 </resources>

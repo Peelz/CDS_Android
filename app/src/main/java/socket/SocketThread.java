@@ -10,7 +10,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import moba.cds.ControlScreen;
-import model.Constant;
+import constants.Constant;
 
 /**
  * Created by gutte on 11/25/2016.
@@ -59,14 +59,14 @@ public class SocketThread implements Runnable{
             this.CMD_SOCKET = new Socket(SERVER_ADDR, SERVER_CMD_PORT);
 
         }catch (SocketTimeoutException e){
-            this.activity.showDialog() ;
+//            this.activity.showDialog() ;
             Log.e("Socket Error","Timeout");
         }
         catch (UnknownHostException e) {
-            this.activity.showDialog() ;
+//            this.activity.showDialog() ;
             Log.e("Socket Error","Unknown Host");
         } catch (IOException e) {
-            this.activity.showDialog() ;
+//            this.activity.showDialog() ;
             Log.e("Socket Error",e.getMessage());
         }
     }

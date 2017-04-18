@@ -11,10 +11,14 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import com.camera.MjpegView;
 
+import constants.AppSystem;
+import constants.Constant;
 import service.BackgroundTask;
 
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -25,15 +29,20 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
 
     //Gear Button
-    Button gearP,gearR,gearN,gearD ;
-    Button activeGear;
-
-    MjpegView cameraView;
-
-    RelativeLayout mainLayout ;
+    Button gearP, gearR, gearN, gearD, activeGear ;
 
     //Driving Control button
     Button btnSpeed,btnBreak ;
+
+    //Switch
+    Switch controlModeSwitch ;
+
+    //Camera Display
+    MjpegView cameraView;
+
+    RelativeLayout mainLayout ;
+        RelativeLayout gearGroupLayout ;
+        GridLayout driverControlLayout ;
 
     //Begin Speed and Break position AxisY
     private float start_distance = 0 ;
@@ -53,6 +62,8 @@ public class ControlScreen extends Activity implements SensorEventListener{
         setContentView(R.layout.control_screen);
 
         this.mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
+        this.gearGroupLayout = (RelativeLayout) findViewById(R.id.gear_layout);
+        this.driverControlLayout = (GridLayout) findViewById(R.id.driver_control_layout);
 
         this.gearP = (Button) findViewById(R.id.button_gear_P) ;
         this.gearR = (Button) findViewById(R.id.button_gear_R) ;
@@ -67,21 +78,20 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         this.cameraView = (MjpegView) findViewById(R.id.cameraView);
 
+        this.controlModeSwitch = (Switch)findViewById(R.id.switch_control_mode);
+
         initial() ;
         setCameraView();
-
-
-
-
     }
 
     void setCameraView(){
         String my_url = "http://192.168.137.97:8080?action=stream";
+        String test_url1 = "http://plazacam.studentaffairs.duke.edu/axis-cgi/mjpg/video.cgi?resolution=320x240" ;
+        String test_url2 = "http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg";
 
         cameraView.setDispWidth(960);
         cameraView.setDispHeight(544);
-        cameraView.setDisplayMode(4);
-        cameraView.setSource(my_url);
+        cameraView.setSource(test_url1);
 
     }
 
@@ -96,11 +106,36 @@ public class ControlScreen extends Activity implements SensorEventListener{
         Sensor mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
 
+        controlModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if (isChecked){
+                setControlMode(1);
+                controlModeSwitch.setText("Simulator");
+            }else {
+                setControlMode(0);
+                controlModeSwitch.setText("Phone");
+            }
+        });
+
         //Background Thread
 //        backgroundTask = new BackgroundTask(ControlScreen.this);
         String streaming_url = "http://www.bmatraffic.com/PlayVideo.aspx?ID=250" ;
 
+    }
 
+    public void setControlMode(int mode){
+        if(mode== Constant.PHONE_CONTROL){
+            AppSystem.CONTROL_MODE = 0 ;
+            gearGroupLayout.setVisibility(View.VISIBLE);
+            driverControlLayout.setVisibility(View.VISIBLE);
+
+        }
+        if(mode == Constant.SIMSET_CONTROL){
+            AppSystem.CONTROL_MODE = 1 ;
+            gearGroupLayout.setVisibility(View.GONE);
+            driverControlLayout.setVisibility(View.GONE);
+
+        }
     }
 
     //Rotation Sensor

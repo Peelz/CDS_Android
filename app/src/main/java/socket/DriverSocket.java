@@ -6,7 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import model.Constant;
+import constants.Constant;
 
 /**
  * Created by gutte on 4/10/2017.

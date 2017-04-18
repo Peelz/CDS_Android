@@ -1,6 +1,6 @@
 package service;
 
-import model.Constant;
+import constants.Constant;
 
 /**
  * Created by gutte on 4/8/2017.
