@@ -20,6 +20,7 @@ import com.camera.MjpegView;
 import constants.AppSystem;
 import constants.Constant;
 import service.BackgroundTask;
+import service.Command;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
@@ -91,7 +92,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         cameraView.setDispWidth(960);
         cameraView.setDispHeight(544);
-        cameraView.setSource(test_url1);
+        cameraView.setSource(Constant.CAMERA_ADD);
 
     }
 
@@ -118,8 +119,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         });
 
         //Background Thread
-//        backgroundTask = new BackgroundTask(ControlScreen.this);
-        String streaming_url = "http://www.bmatraffic.com/PlayVideo.aspx?ID=250" ;
+        backgroundTask = new BackgroundTask(ControlScreen.this);
 
     }
 
@@ -159,7 +159,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         int value = setAngle(angle+90) ;
 
 //        Background Thread Send Rotate Control data
-//        backgroundTask.sendDriverControlData(header+value);
+        backgroundTask.sendDriverControlData(header+value);
     }
 
 
@@ -190,7 +190,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         String value = btn.getText().toString();
 
         if (btn != this.activeGear){
-//            backgroundTask.sendCommandData(new Command().setChangeGearRequest(value) );
+            backgroundTask.sendCommandData(new Command().setChangeGearRequest(value) );
         }
     }
 
@@ -201,12 +201,9 @@ public class ControlScreen extends Activity implements SensorEventListener{
     }
 
 
-    View.OnTouchListener ButtonSliderControl = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent event) {
-            ButtonSliderHandle(view, event);
-            return true;
-        }
+    View.OnTouchListener ButtonSliderControl = (view, event) -> {
+        ButtonSliderHandle(view, event);
+        return true;
     };
 
     public String setHeaderValueByView(View v){
@@ -257,7 +254,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
                 break;
         }
 //        Background Thread Send Speed/Brake Control data
-//        backgroundTask.sendDriverControlData(header + value);
+        backgroundTask.sendDriverControlData(header + value);
 
     }
 
