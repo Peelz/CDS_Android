@@ -13,7 +13,7 @@ import constants.Constant;
  * Created by gutte on 4/10/2017.
  */
 
-public class CommandSocketTest {
+public class CommandRequestSocketTest {
     String IP = Constant.HOST ;
     Socket socket ;
     byte[] buffer = new byte[1024];

@@ -19,11 +19,15 @@ public class Constant {
     final static int SOCKET_DRIVER_PORT = 7789 ;
 
     //
-    final static int DEFAULT_CONTROL_MODE = 0 ;
+    public final static int DEFAULT_CONTROL_MODE = 0 ;
 
     public final static int PHONE_CONTROL = 0 ;
 
     public final static int SIMSET_CONTROL = 1 ;
+
+    public final static String PHONE_CONTROL_TEXT = "PH";
+
+    public final static String SIMSET_CONTROL_TEXT = "SIM";
 
     //
     public final static String GEAR_N_TEXT = "N" ;

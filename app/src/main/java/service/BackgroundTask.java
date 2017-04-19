@@ -6,9 +6,10 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
 
+import constants.Constant;
+import moba.cds.CommandBlock;
 import moba.cds.ControlScreen;
 import moba.cds.R;
-import constants.Constant;
 import socket.CommandSocket;
 import socket.DriverSocket;
 
@@ -18,18 +19,30 @@ import socket.DriverSocket;
 
 public class BackgroundTask {
 
+    private final String TAG = "BACKGROUND_TASK";
+
     ControlScreen activity ;
 
     DriverSocket driverSocket;
     CommandSocket commandSocket;
 
-    Handler mHandler = new Handler(Looper.getMainLooper()){
+    public Handler mHandler = new Handler(Looper.getMainLooper()){
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Button button = (Button) msg.obj;
-            activity.setCurrentUIGear(button);
+            CommandBlock command = (CommandBlock) msg.obj ;
+
+            switch (command.getHead()){
+                case (Constant.CMD_CHANGE_GEAR):
+                    changeGear(command.getArg()) ;
+                    break;
+
+                case (Constant.CMD_CHANGE_MODE):
+                    changeMode(command.getArg());
+                    break;
+            }
+//            Log.d(TAG, "Handler done");
         }
     };
 
@@ -45,27 +58,8 @@ public class BackgroundTask {
 
     }
 
-    void CommadTask(Command command){
-
-
-    }
-
-    public  void commandDecoder(String message){
-        String[] str = message.split(" ");
-        switch (str[0]){
-            case Constant.CMD_CHANGE_GEAR:
-                Log.d("Task Decode", str[0]+str[1]);
-                changeGear(str[1]) ;
-                break;
-            case  Constant.CMD_CHANGE_MODE:
-                break;
-        }
-
-    }
-
-    void changeGear(String gear){
+    public void changeGear(String gear){
         Button btn = null;
-        Message msg ;
         switch (gear){
             case Constant.GEAR_D_TEXT:
                 btn = (Button)activity.findViewById(R.id.button_gear_D);
@@ -81,12 +75,13 @@ public class BackgroundTask {
                 btn = (Button)activity.findViewById(R.id.button_gear_R);
                 break;
         }
+        activity.setCurrentUIGear(btn);
 
-        msg = mHandler.obtainMessage(1 ,btn);
-        msg.sendToTarget();
     }
 
     public void changeMode(String mode){
+        Log.d(TAG, "Change Mode input "+mode);
+        activity.setControlMode(mode);
 
     }
 

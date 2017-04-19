@@ -1,5 +1,6 @@
 package socket;
 
+import android.os.Message;
 import android.util.Log;
 
 import java.io.DataOutputStream;
@@ -8,6 +9,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import moba.cds.CommandBlock;
 import service.BackgroundTask;
 
 import static constants.Constant.HOST;
@@ -33,9 +35,6 @@ public class CommandSocket implements Runnable {
 
         try {
             socket = new Socket(HOST, 7769);
-//            System.out.println( "sleep" );
-//            Thread.sleep(1000);
-//            System.out.println( "Go" );
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.print("-a PHONE");
@@ -45,8 +44,12 @@ public class CommandSocket implements Runnable {
             int read ;
             while( (read = is.read(buffer)) != -1 ){
                 String str = new String(buffer, 0,read) ;
-                task.commandDecoder(str);
-                Log.d("Command Socket", "Receive "+str);
+                CommandBlock cmd = new CommandBlock(str);
+
+                Message msg = task.mHandler.obtainMessage(1, cmd);
+                msg.sendToTarget();
+
+                Log.d("CommandRequest Socket", "Receive "+str);
             }
         } catch (IOException e) {
             e.printStackTrace();

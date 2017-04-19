@@ -90,6 +90,7 @@
         android:id="@+id/switch_control_mode"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+
         android:layout_marginEnd="35dp" />
 
     <GridLayout

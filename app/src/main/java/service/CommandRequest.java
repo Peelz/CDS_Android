@@ -1,29 +1,18 @@
 package service;
 
-import constants.Constant;
-
 /**
  * Created by gutte on 4/8/2017.
  */
 
-public class Command {
+public class CommandRequest {
 
-    public Command(){
-
-    }
-
-    public Command(String message){
+    public CommandRequest(){
 
     }
 
-    public String setChangeGearRequest(String gear){
+    public CommandRequest(String message){
 
-        return Constant.CMD_CHANGE_GEAR +" "+gear ;
     }
 
-    public String setChangeModeRequest(String mode){
-
-        return Constant.CMD_CHANGE_MODE +" "+mode ;
-    }
 
 }

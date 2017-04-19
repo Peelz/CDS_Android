@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,7 +19,6 @@ import com.camera.MjpegView;
 import constants.AppSystem;
 import constants.Constant;
 import service.BackgroundTask;
-import service.Command;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
@@ -29,8 +27,9 @@ import static android.view.MotionEvent.ACTION_UP;
 public class ControlScreen extends Activity implements SensorEventListener{
 
 
+    private String TAG = "CONTROL_SCREEN";
     //Gear Button
-    Button gearP, gearR, gearN, gearD, activeGear ;
+    public Button gearP, gearR, gearN, gearD, activeGear ;
 
     //Driving Control button
     Button btnSpeed,btnBreak ;
@@ -81,14 +80,21 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         this.controlModeSwitch = (Switch)findViewById(R.id.switch_control_mode);
 
+        //Background Thread
+        backgroundTask = new BackgroundTask(ControlScreen.this);
+
+
         initial() ;
-        setCameraView();
+
+
     }
 
     void setCameraView(){
-        String my_url = "http://192.168.137.97:8080?action=stream";
+        String my_url = "http://192.168.100.1:8080?action=stream";
         String test_url1 = "http://plazacam.studentaffairs.duke.edu/axis-cgi/mjpg/video.cgi?resolution=320x240" ;
         String test_url2 = "http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg";
+
+        controlModeSwitch.setClickable(false);
 
         cameraView.setDispWidth(960);
         cameraView.setDispHeight(544);
@@ -99,44 +105,14 @@ public class ControlScreen extends Activity implements SensorEventListener{
     void initial(){
         //init
         this.max_distance = getScreenHeight()/2 ;
-        this.activeGear = gearN ;
-        gearN.setBackgroundResource(R.drawable.active_gear_button) ;
 
-        // Get an instance of the SensorManager
-        SensorManager mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
-
-        controlModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-            if (isChecked){
-                setControlMode(1);
-                controlModeSwitch.setText("Simulator");
-            }else {
-                setControlMode(0);
-                controlModeSwitch.setText("Phone");
-            }
-        });
-
-        //Background Thread
-        backgroundTask = new BackgroundTask(ControlScreen.this);
+        setCurrentUIGear(gearN);
+        setCameraView();
+        setSwitchHandler();
 
     }
 
-    public void setControlMode(int mode){
-        if(mode== Constant.PHONE_CONTROL){
-            AppSystem.CONTROL_MODE = 0 ;
-            gearGroupLayout.setVisibility(View.VISIBLE);
-            driverControlLayout.setVisibility(View.VISIBLE);
 
-        }
-        if(mode == Constant.SIMSET_CONTROL){
-            AppSystem.CONTROL_MODE = 1 ;
-            gearGroupLayout.setVisibility(View.GONE);
-            driverControlLayout.setVisibility(View.GONE);
-
-        }
-    }
 
     //Rotation Sensor
     @Override
@@ -173,6 +149,57 @@ public class ControlScreen extends Activity implements SensorEventListener{
         }
     }
 
+    // Bind switch to change mode control
+    void setSwitchHandler(){
+        controlModeSwitch.setOnClickListener((View) ->{
+            String head = Constant.CMD_CHANGE_MODE ;
+            String arg = "" ;
+
+            if(controlModeSwitch.isChecked()){
+                arg = Constant.PHONE_CONTROL_TEXT ;
+            }else {
+                arg = Constant.SIMSET_CONTROL_TEXT ;
+            }
+            backgroundTask.sendCommandData(head+" "+arg);
+
+        });
+
+    }
+
+    public void setControlMode(String mode){
+        //Phone Control Mode
+        if(mode.equals(Constant.PHONE_CONTROL_TEXT)){
+
+            AppSystem.CONTROL_MODE = 0 ;
+            gearGroupLayout.setVisibility(View.VISIBLE);
+            driverControlLayout.setVisibility(View.VISIBLE);
+            controlModeSwitch.setChecked(true);
+            controlModeSwitch.setText("Phone");
+        }
+        //Sim control mode
+        else if(mode.equals(Constant.SIMSET_CONTROL_TEXT)){
+
+            AppSystem.CONTROL_MODE = 1 ;
+            gearGroupLayout.setVisibility(View.GONE);
+            driverControlLayout.setVisibility(View.GONE);
+            controlModeSwitch.setChecked(false);
+            controlModeSwitch.setText("Simulator");
+        }
+        Log.d(TAG,"Set Mode "+mode);
+
+    }
+    // Gear Handler
+    public void gearHandler(View view){
+
+        Button btn = (Button) findViewById(view.getId());
+        String value = btn.getText().toString();
+        String head = Constant.CMD_CHANGE_GEAR ;
+
+        if (btn != this.activeGear){
+            backgroundTask.sendCommandData(head+" "+value);
+        }
+    }
+
     public void setCurrentUIGear(Button button){
 
         if (button != null){
@@ -181,17 +208,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
             this.activeGear = button ;
             Log.d("Change Gear", button.getText().toString());
         }
-    }
-
-
-    public void gearHandler(View view){
-
-        Button btn = (Button) findViewById(view.getId());
-        String value = btn.getText().toString();
-
-        if (btn != this.activeGear){
-            backgroundTask.sendCommandData(new Command().setChangeGearRequest(value) );
-        }
+        Log.d("Change Gear", "Arg is Null");
     }
 
     public void reSetActiveGear(){
@@ -236,7 +253,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
                 }
                 view.setY(currY);
                 header = setHeaderValueByView(view) ;
-                value = setActiveValueByUI(currY) ;
+                value = setValueByUiPosition(currY) ;
 
                 break;
             case ACTION_DOWN:
@@ -244,13 +261,13 @@ public class ControlScreen extends Activity implements SensorEventListener{
                     start_distance = view.getY();
                 }
                 header = setHeaderValueByView(view);
-                value = setActiveValueByUI(currY);
+                value = setValueByUiPosition(currY);
                 break;
             case ACTION_UP:
                 view.setY(start_distance);
                 currY = start_distance ;
                 header = setHeaderValueByView(view);
-                value = setActiveValueByUI(currY);
+                value = setValueByUiPosition(currY);
                 break;
         }
 //        Background Thread Send Speed/Brake Control data
@@ -258,7 +275,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
     }
 
-    int setActiveValueByUI(float param){
+    int setValueByUiPosition(float param){
         int result = (int) (Math.abs(start_distance - param)*100/Math.abs(start_distance - max_distance));
         return result;
     }
