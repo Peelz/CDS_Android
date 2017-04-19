@@ -23,8 +23,8 @@ public class BackgroundTask {
 
     ControlScreen activity ;
 
-    DriverSocket driverSocket;
-    CommandSocket commandSocket;
+    DriverSocket driverSocket = null ;
+    CommandSocket commandSocket = null ;
 
     public Handler mHandler = new Handler(Looper.getMainLooper()){
 
@@ -78,6 +78,7 @@ public class BackgroundTask {
         activity.setCurrentUIGear(btn);
 
     }
+
 
     public void changeMode(String mode){
         Log.d(TAG, "Change Mode input "+mode);

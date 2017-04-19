@@ -157,8 +157,10 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
             if(controlModeSwitch.isChecked()){
                 arg = Constant.PHONE_CONTROL_TEXT ;
+
             }else {
                 arg = Constant.SIMSET_CONTROL_TEXT ;
+
             }
             backgroundTask.sendCommandData(head+" "+arg);
 

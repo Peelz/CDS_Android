@@ -12,6 +12,7 @@
 
     <Button
         android:text="เชื่อมต่อ"
+        android:textColor="#fff"
         android:layout_width="150dp"
         android:layout_height="60dp"
         android:id="@+id/btn_connect_to_server"
