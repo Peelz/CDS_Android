@@ -1,6 +1,5 @@
 package constants;
 
-import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -47,13 +46,6 @@ public class Constant {
 
     public static Socket SOCKET_DRIVER ;
 
-    Constant(){
-        try {
-            SOCKET_CMD = new Socket(HOST, SOCKET_CMD_PORT);
-            SOCKET_DRIVER = new Socket(HOST, SOCKET_DRIVER_PORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
 }

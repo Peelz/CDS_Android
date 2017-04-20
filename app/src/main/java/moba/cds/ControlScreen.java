@@ -5,12 +5,12 @@ import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 
@@ -18,7 +18,6 @@ import com.camera.MjpegView;
 
 import constants.AppSystem;
 import constants.Constant;
-import service.BackgroundTask;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
@@ -28,6 +27,13 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
 
     private String TAG = "CONTROL_SCREEN";
+    // Sensor
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+
+    //
+    private int tmpAcc = 0 ;
+
     //Gear Button
     public Button gearP, gearR, gearN, gearD, activeGear ;
 
@@ -42,7 +48,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
     RelativeLayout mainLayout ;
         RelativeLayout gearGroupLayout ;
-        GridLayout driverControlLayout ;
+        RelativeLayout driverControlLayout ;
 
     //Begin Speed and Break position AxisY
     private float start_distance = 0 ;
@@ -63,7 +69,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         this.mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
         this.gearGroupLayout = (RelativeLayout) findViewById(R.id.gear_layout);
-        this.driverControlLayout = (GridLayout) findViewById(R.id.driver_control_layout);
+        this.driverControlLayout = (RelativeLayout) findViewById(R.id.driver_control_layout);
 
         this.gearP = (Button) findViewById(R.id.button_gear_P) ;
         this.gearR = (Button) findViewById(R.id.button_gear_R) ;
@@ -94,7 +100,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
         String test_url1 = "http://plazacam.studentaffairs.duke.edu/axis-cgi/mjpg/video.cgi?resolution=320x240" ;
         String test_url2 = "http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg";
 
-        controlModeSwitch.setClickable(false);
 
         cameraView.setDispWidth(960);
         cameraView.setDispHeight(544);
@@ -106,36 +111,51 @@ public class ControlScreen extends Activity implements SensorEventListener{
         //init
         this.max_distance = getScreenHeight()/2 ;
 
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
         setCurrentUIGear(gearN);
         setCameraView();
         setSwitchHandler();
 
+
     }
 
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+    }
 
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+
+    }
 
     //Rotation Sensor
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
-
     }
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER) {
-            return;
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float aX= event.values[0];
+            float aY= event.values[1];
+            int angle = (int) (Math.atan2(aY,aX)/(Math.PI/180)) ;
+
+            String header = "t";
+
+            int value = setAngle(angle+90) ;
+            if (value != tmpAcc){
+    //        Background Thread Send Rotate Control data
+    //        Log.d(TAG, header+value);
+    //        backgroundTask.sendDriverControlData(header+value);
+            }
+
         }
-        float aX= event.values[0];
-        float aY= event.values[1];
-        int angle = (int) (Math.atan2(aY,aX)/(Math.PI/180)) ;
 
-        String header = "t";
-
-        int value = setAngle(angle+90) ;
-
-//        Background Thread Send Rotate Control data
-        backgroundTask.sendDriverControlData(header+value);
     }
 
 
@@ -155,14 +175,9 @@ public class ControlScreen extends Activity implements SensorEventListener{
             String head = Constant.CMD_CHANGE_MODE ;
             String arg = "" ;
 
-            if(controlModeSwitch.isChecked()){
-                arg = Constant.PHONE_CONTROL_TEXT ;
+            controlModeSwitch.setClickable(false);
 
-            }else {
-                arg = Constant.SIMSET_CONTROL_TEXT ;
-
-            }
-            backgroundTask.sendCommandData(head+" "+arg);
+//            backgroundTask.sendCommandData(head+" "+arg);
 
         });
 
@@ -198,7 +213,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         String head = Constant.CMD_CHANGE_GEAR ;
 
         if (btn != this.activeGear){
-            backgroundTask.sendCommandData(head+" "+value);
+//            backgroundTask.sendCommandData(head+" "+value);
         }
     }
 
@@ -208,9 +223,9 @@ public class ControlScreen extends Activity implements SensorEventListener{
             reSetActiveGear();
             button.setBackgroundResource(R.drawable.active_gear_button) ;
             this.activeGear = button ;
-            Log.d("Change Gear", button.getText().toString());
+            Log.d(TAG, "Change Gear"+button.getText().toString());
         }
-        Log.d("Change Gear", "Arg is Null");
+        Log.d(TAG, "Change Gear Arg is Null");
     }
 
     public void reSetActiveGear(){
@@ -273,7 +288,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
                 break;
         }
 //        Background Thread Send Speed/Brake Control data
-        backgroundTask.sendDriverControlData(header + value);
+//        backgroundTask.sendDriverControlData(header + value);
 
     }
 
@@ -281,9 +296,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
         int result = (int) (Math.abs(start_distance - param)*100/Math.abs(start_distance - max_distance));
         return result;
     }
-
-
-
 }
 
 

@@ -1,8 +1,6 @@
 package moba.cds;
 
 import android.app.Activity;
-import android.os.Bundle;
-
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -11,6 +9,8 @@ public class HomeScreen extends Activity {
     Button btnSearch ;
 
     TextView txt_response ;
+
+    BackgroundTask backgroundTask = new BackgroundTask();
 
 
 //    class Connect extends AsyncTask<Void, Void, Void> {
@@ -50,27 +50,30 @@ public class HomeScreen extends Activity {
 //        }
 //    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_screen);
-
-        txt_response = (TextView)findViewById(R.id.txt_response) ;
-        btnSearch= (Button)findViewById(R.id.btn_connect_to_server);
-
-
-
-//        btnSearch.setOnClickListener(new View.OnClickListener() {
-//            @Override
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.home_screen);
 //
-//            public void onClick(View view) {
+//        txt_response = (TextView)findViewById(R.id.txt_response) ;
+//        btnSearch= (Button)findViewById(R.id.btn_connect_to_server);
 //
-//                Connect task = new Connect() ;
-//                task.execute();
 //
+//
+//        btnSearch.setOnClickListener(view -> {
+//
+//            if ( backgroundTask.isConnectionAlive()){
+//                Intent intent = new Intent(this, ControlScreen.class);
+//
+//                intent.putExtra(EXTRA_MESSAGE, message);
+//                startActivity(intent);
+//
+//            }else{
+//                Toast.makeText(this, "Host not found, please check your device ", Toast.LENGTH_SHORT).show();
 //            }
+//
 //        });
-    }
+//    }
 
 
 }

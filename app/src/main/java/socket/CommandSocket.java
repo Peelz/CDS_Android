@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import moba.cds.CommandBlock;
-import service.BackgroundTask;
+import moba.cds.BackgroundTask;
 
 import static constants.Constant.HOST;
 
@@ -22,7 +22,10 @@ public class CommandSocket implements Runnable {
 
     private final BackgroundTask task;
     Socket socket ;
-    byte[] buffer = new byte[1024];
+
+    byte[] buffer = new byte[512];
+
+    boolean isConnect = false ;
 
 
 
@@ -35,24 +38,48 @@ public class CommandSocket implements Runnable {
 
         try {
             socket = new Socket(HOST, 7769);
+            if ( auth() ){
+                isConnect = true ;
+                recv();
+            }else{
+                isConnect = false ;
+            }
 
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            this.socket = null ;
+            e.printStackTrace();
+        }
+
+    }
+
+    public boolean auth(){
+
+        try {
+
+            PrintWriter out = null;
+            out = new PrintWriter(socket.getOutputStream(), true);
             out.print("-a PHONE");
             out.flush();
+            return true ;
 
-            InputStream is = socket.getInputStream();
-            int read ;
-            while( (read = is.read(buffer)) != -1 ){
-                String str = new String(buffer, 0,read) ;
-                CommandBlock cmd = new CommandBlock(str);
-
-                Message msg = task.mHandler.obtainMessage(1, cmd);
-                msg.sendToTarget();
-
-                Log.d("CommandRequest Socket", "Receive "+str);
-            }
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            return false ;
+        }
+
+    }
+
+    public void recv() throws IOException {
+        InputStream is = socket.getInputStream();
+        int read ;
+        while( (read = is.read(buffer)) != -1 ){
+            String str = new String(buffer, 0,read) ;
+            CommandBlock cmd = new CommandBlock(str);
+
+            Message msg = task.mHandler.obtainMessage(1, cmd);
+            msg.sendToTarget();
+
+            Log.d("CommandRequest Socket", "Receive "+str);
         }
 
     }
@@ -65,5 +92,9 @@ public class CommandSocket implements Runnable {
         } catch (IOException e) {
             Log.d("Driver socket", "Data not sent");
         }
+    }
+
+    public boolean isConnect(){
+        return isConnect ;
     }
 }

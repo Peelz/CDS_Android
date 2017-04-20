@@ -1,5 +1,6 @@
-package service;
+package moba.cds;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -7,9 +8,6 @@ import android.util.Log;
 import android.widget.Button;
 
 import constants.Constant;
-import moba.cds.CommandBlock;
-import moba.cds.ControlScreen;
-import moba.cds.R;
 import socket.CommandSocket;
 import socket.DriverSocket;
 
@@ -21,12 +19,19 @@ public class BackgroundTask {
 
     private final String TAG = "BACKGROUND_TASK";
 
-    ControlScreen activity ;
+    ControlScreen controlScreen;
+
+    HomeScreen homeScreen ;
 
     DriverSocket driverSocket = null ;
     CommandSocket commandSocket = null ;
 
+    Thread driverSocketThread = null ;
+    Thread commandSocketThread = null ;
+
+
     public Handler mHandler = new Handler(Looper.getMainLooper()){
+
 
         @Override
         public void handleMessage(Message msg) {
@@ -46,15 +51,20 @@ public class BackgroundTask {
         }
     };
 
-
-    public BackgroundTask(ControlScreen activity){
-
-        this.activity = activity;
+    public BackgroundTask(){
         driverSocket = new DriverSocket();
         commandSocket = new CommandSocket(BackgroundTask.this);
 
-        new Thread(driverSocket).start() ;
-        new Thread(commandSocket).start() ;
+        commandSocketThread = new Thread(commandSocket) ;
+        driverSocketThread = new Thread(driverSocket) ;
+
+    }
+
+    public BackgroundTask(ControlScreen controlScreen){
+
+        this.controlScreen = controlScreen;
+        driverSocket = new DriverSocket();
+        commandSocket = new CommandSocket(BackgroundTask.this);
 
     }
 
@@ -62,27 +72,27 @@ public class BackgroundTask {
         Button btn = null;
         switch (gear){
             case Constant.GEAR_D_TEXT:
-                btn = (Button)activity.findViewById(R.id.button_gear_D);
+                btn = (Button) controlScreen.findViewById(R.id.button_gear_D);
                 break;
             case Constant.GEAR_N_TEXT:
-                btn = (Button)activity.findViewById(R.id.button_gear_N);
+                btn = (Button) controlScreen.findViewById(R.id.button_gear_N);
                 break ;
 
             case Constant.GEAR_P_TEXT:
-                btn = (Button)activity.findViewById(R.id.button_gear_P);
+                btn = (Button) controlScreen.findViewById(R.id.button_gear_P);
                 break ;
             case Constant.GEAR_R_TEXT:
-                btn = (Button)activity.findViewById(R.id.button_gear_R);
+                btn = (Button) controlScreen.findViewById(R.id.button_gear_R);
                 break;
         }
-        activity.setCurrentUIGear(btn);
+        controlScreen.setCurrentUIGear(btn);
 
     }
 
 
     public void changeMode(String mode){
         Log.d(TAG, "Change Mode input "+mode);
-        activity.setControlMode(mode);
+        controlScreen.setControlMode(mode);
 
     }
 
@@ -95,4 +105,14 @@ public class BackgroundTask {
 
         commandSocket.sendStringData(cmd);
     }
+
+    public void setControlScreen(Context controlScreen){
+        this.controlScreen = (ControlScreen)controlScreen ;
+    }
+
+    public boolean isConnectionAlive(){
+        return commandSocket.isConnect() ;
+    }
+
+
 }
