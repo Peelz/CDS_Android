@@ -57,8 +57,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
     //Background service
     private BackgroundTask backgroundTask ;
-
-
+    public boolean ALLOW_CHANGE_MODE = false ;
 
 
     @Override
@@ -150,8 +149,8 @@ public class ControlScreen extends Activity implements SensorEventListener{
             int value = setAngle(angle+90) ;
             if (value != tmpAcc){
     //        Background Thread Send Rotate Control data
-    //        Log.d(TAG, header+value);
-    //        backgroundTask.sendDriverControlData(header+value);
+    //         Log.d(TAG, header+value);
+                // backgroundTask.sendDriverControlData(header+value);
             }
 
         }
@@ -175,17 +174,27 @@ public class ControlScreen extends Activity implements SensorEventListener{
             String head = Constant.CMD_CHANGE_MODE ;
             String arg = "" ;
 
-            controlModeSwitch.setClickable(false);
+            if(ALLOW_CHANGE_MODE){
+                if( controlModeSwitch.isChecked() ){
+                    arg = Constant.PHONE_CONTROL_STRING ;
+                }else{
+                    arg =Constant.SIMSET_CONTROL_STRING ;
+                }
+                backgroundTask.sendCommandData(head+" "+arg);
 
-//            backgroundTask.sendCommandData(head+" "+arg);
+                Log.d(TAG, "Change mode from ui "+ALLOW_CHANGE_MODE);
 
+            }else{
+                Log.d(TAG, "Change mode from ui "+ALLOW_CHANGE_MODE);
+
+            }
         });
 
     }
 
     public void setControlMode(String mode){
         //Phone Control Mode
-        if(mode.equals(Constant.PHONE_CONTROL_TEXT)){
+        if(mode.equals(Constant.PHONE_CONTROL_STRING)){
 
             AppSystem.CONTROL_MODE = 0 ;
             gearGroupLayout.setVisibility(View.VISIBLE);
@@ -194,7 +203,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
             controlModeSwitch.setText("Phone");
         }
         //Sim control mode
-        else if(mode.equals(Constant.SIMSET_CONTROL_TEXT)){
+        else if(mode.equals(Constant.SIMSET_CONTROL_STRING)){
 
             AppSystem.CONTROL_MODE = 1 ;
             gearGroupLayout.setVisibility(View.GONE);
@@ -213,7 +222,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         String head = Constant.CMD_CHANGE_GEAR ;
 
         if (btn != this.activeGear){
-//            backgroundTask.sendCommandData(head+" "+value);
+            backgroundTask.sendCommandData(head+" "+value);
         }
     }
 
@@ -225,7 +234,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
             this.activeGear = button ;
             Log.d(TAG, "Change Gear"+button.getText().toString());
         }
-        Log.d(TAG, "Change Gear Arg is Null");
+//        Log.d(TAG, "Change Gear Arg is Null");
     }
 
     public void reSetActiveGear(){
@@ -288,7 +297,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
                 break;
         }
 //        Background Thread Send Speed/Brake Control data
-//        backgroundTask.sendDriverControlData(header + value);
+        backgroundTask.sendDriverControlData(header + value);
 
     }
 

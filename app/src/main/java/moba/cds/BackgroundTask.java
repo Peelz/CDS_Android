@@ -46,12 +46,16 @@ public class BackgroundTask {
                 case (Constant.CMD_CHANGE_MODE):
                     changeMode(command.getArg());
                     break;
+                case (Constant.CMD_STATUS_CAR):
+                    upDateStatus(command.getArg());
+                    break;
             }
 //            Log.d(TAG, "Handler done");
         }
     };
 
     public BackgroundTask(){
+
         driverSocket = new DriverSocket();
         commandSocket = new CommandSocket(BackgroundTask.this);
 
@@ -63,9 +67,21 @@ public class BackgroundTask {
     public BackgroundTask(ControlScreen controlScreen){
 
         this.controlScreen = controlScreen;
+
         driverSocket = new DriverSocket();
         commandSocket = new CommandSocket(BackgroundTask.this);
 
+        commandSocketThread = new Thread(commandSocket) ;
+        driverSocketThread = new Thread(driverSocket) ;
+
+        commandSocketThread.start();
+        driverSocketThread.start() ;
+
+    }
+
+    public void start(){
+        commandSocketThread.start();
+        driverSocketThread.start() ;
     }
 
     public void changeGear(String gear){
@@ -89,6 +105,16 @@ public class BackgroundTask {
 
     }
 
+    public void upDateStatus(String status){
+        switch (status){
+            case(Constant.STATUS_HAVE_SIM):
+                controlScreen.ALLOW_CHANGE_MODE = true ;
+                break ;
+            case(Constant.STATUS_NO_SIM) :
+                controlScreen.ALLOW_CHANGE_MODE = false ;
+                break ;
+        }
+    }
 
     public void changeMode(String mode){
         Log.d(TAG, "Change Mode input "+mode);

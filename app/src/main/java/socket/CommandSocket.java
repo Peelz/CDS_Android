@@ -21,6 +21,8 @@ import static constants.Constant.HOST;
 public class CommandSocket implements Runnable {
 
     private final BackgroundTask task;
+
+    String TAG = "CommandSocket" ;
     Socket socket ;
 
     byte[] buffer = new byte[512];
@@ -38,6 +40,7 @@ public class CommandSocket implements Runnable {
 
         try {
             socket = new Socket(HOST, 7769);
+
             if ( auth() ){
                 isConnect = true ;
                 recv();
@@ -55,9 +58,7 @@ public class CommandSocket implements Runnable {
     public boolean auth(){
 
         try {
-
-            PrintWriter out = null;
-            out = new PrintWriter(socket.getOutputStream(), true);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.print("-a PHONE");
             out.flush();
             return true ;
@@ -79,7 +80,7 @@ public class CommandSocket implements Runnable {
             Message msg = task.mHandler.obtainMessage(1, cmd);
             msg.sendToTarget();
 
-            Log.d("CommandRequest Socket", "Receive "+str);
+            Log.d(TAG, "Receive "+str);
         }
 
     }
@@ -87,7 +88,9 @@ public class CommandSocket implements Runnable {
     public void sendStringData(String data){
         try {
             DataOutputStream dOut = new DataOutputStream( socket.getOutputStream());
+            Log.d(TAG, "Sent "+dOut);
             dOut.writeBytes(data);
+
 
         } catch (IOException e) {
             Log.d("Driver socket", "Data not sent");

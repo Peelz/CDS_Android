@@ -1,7 +1,5 @@
 package constants;
 
-import java.net.Socket;
-
 /**
  * Created by gutte on 4/8/2017.
  */
@@ -24,9 +22,9 @@ public class Constant {
 
     public final static int SIMSET_CONTROL = 1 ;
 
-    public final static String PHONE_CONTROL_TEXT = "PH";
+    public final static String PHONE_CONTROL_STRING = "PH";
 
-    public final static String SIMSET_CONTROL_TEXT = "SIM";
+    public final static String SIMSET_CONTROL_STRING = "SIM";
 
     //
     public final static String GEAR_N_TEXT = "N" ;
@@ -42,9 +40,13 @@ public class Constant {
 
     public static final String CMD_CHANGE_MODE = "-cm" ;
 
-    public static Socket SOCKET_CMD ;
+    public static final String CMD_STATUS_CAR = "-s" ;
 
-    public static Socket SOCKET_DRIVER ;
+    //
+
+    public static final String STATUS_NO_SIM = "0" ;
+
+    public static final String STATUS_HAVE_SIM = "1" ;
 
 
 

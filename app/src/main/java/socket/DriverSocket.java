@@ -14,6 +14,7 @@ import constants.Constant;
 
 public class DriverSocket implements Runnable {
     Socket socket ;
+    String TAG = "DriverSocket" ;
 
     @Override
     public void run() {
@@ -22,6 +23,7 @@ public class DriverSocket implements Runnable {
             DataOutputStream dOut = new DataOutputStream( socket.getOutputStream());
             dOut.writeBytes("PHONE");
         } catch (IOException e) {
+            Log.d(TAG,"Socket Cannt connect") ;
             e.printStackTrace();
         }
     }
