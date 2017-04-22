@@ -1,12 +1,14 @@
 package moba.cds;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -58,6 +60,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
     //Background service
     private BackgroundTask backgroundTask ;
     public boolean ALLOW_CHANGE_MODE = false ;
+    private PowerManager.WakeLock mWakeLock;
 
 
     @Override
@@ -87,6 +90,10 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         //Background Thread
         backgroundTask = new BackgroundTask(ControlScreen.this);
+
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        this.mWakeLock.acquire();
 
 
         initial() ;
@@ -131,6 +138,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
     }
 
+
     //Rotation Sensor
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
@@ -150,7 +158,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
             if (value != tmpAcc){
     //        Background Thread Send Rotate Control data
     //         Log.d(TAG, header+value);
-                // backgroundTask.sendDriverControlData(header+value);
+                 backgroundTask.sendDriverControlData(header+value);
             }
 
         }

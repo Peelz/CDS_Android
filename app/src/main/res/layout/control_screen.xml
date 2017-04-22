@@ -106,22 +106,22 @@
         tools:ignore="RtlHardcoded">
 
         <Button
-            android:id="@+id/Break_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-
-            android:background="@drawable/circle"
-            android:text="B"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true" />
-
-        <Button
             android:id="@+id/Speed_button"
             android:layout_width="45dp"
             android:layout_height="45dp"
 
             android:background="@drawable/circle"
             android:text="S"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:id="@+id/Break_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+
+            android:background="@drawable/circle"
+            android:text="B"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>
