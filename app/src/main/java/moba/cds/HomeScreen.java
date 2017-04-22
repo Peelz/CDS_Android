@@ -1,79 +1,113 @@
 package moba.cds;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
+import constants.Constant;
 
 public class HomeScreen extends Activity {
 
+    String TAG = "HomeScreen";
+
     Button btnSearch ;
 
-    TextView txt_response ;
+    TextView txtResponse ;
+    private EditText IpText;
 
-    BackgroundTask backgroundTask = new BackgroundTask();
+    class ConnectToServer extends AsyncTask<Void, Void, Void> {
+
+        Socket server = null ;// new Socket(Constant.HOST, 7769) ;
+        boolean exist = false ;
+        Activity context ;
+
+        public ConnectToServer(Activity context){
+
+            this.context = context ;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.d(TAG, "Doing background");
+            try {
+                Socket socket =  new Socket() ;
+                InetSocketAddress mInet = new InetSocketAddress(Constant.HOST, 7769);
+                socket.connect(mInet, 500);
+
+                if(socket.isConnected()){
+                    Log.d(TAG,"Socket connected");
+                    socket.close();
+                    exist = true ;
+                }else{
+                    exist = false ;
+                }
+
+            }catch (IOException e){
+                Log.d(TAG,"Server Not Found");
+            }
+            return null ;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(exist){
+                Intent intent = new Intent(context, ControlScreen.class);
+                startActivity(intent);
+
+            }else{
+                txtResponse.setText("Connection Failure");
+                Toast.makeText(context, "Host not found, please check your device ", Toast.LENGTH_LONG).show();
+
+            }
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.home_screen);
+
+        txtResponse = (TextView)findViewById(R.id.txt_response) ;
+        IpText = (EditText)findViewById(R.id.ip_text) ;
+        btnSearch= (Button)findViewById(R.id.btn_connect_to_server);
 
 
-//    class Connect extends AsyncTask<Void, Void, Void> {
-//
-//        SocketThread server = new SocketThread() ;
-//        boolean exist = false ;
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            try {
-//                Socket socket = new Socket(server.getServerAddr(), server.getServerPort());
-//                socket.setSoTimeout(500);
-//                if(socket.isConnected()){
-//                    Log.d("SocketConnection", "Connect");
-//                    socket.close();
-//                    exist = true ;
-//                }else{
-//                    exist = false ;
-//                }
-//
-//            }catch (IOException e){
-//                Log.d("Socket",e.getMessage());
-//            }
-//            return null ;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//            if(exist){
-//                Intent i = new Intent(HomeScreen.this, ControlScreen.class);
-//
-//                startActivity(i);
-//
-//            }else{
-//                txt_response.setText("Connection Failure");
-//            }
-//        }
-//    }
+        IpText.setText(Constant.HOST);
+        btnSearch.setOnClickListener(view ->
+                new  ConnectToServer(HomeScreen.this).execute()
+        );
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.home_screen);
-//
-//        txt_response = (TextView)findViewById(R.id.txt_response) ;
-//        btnSearch= (Button)findViewById(R.id.btn_connect_to_server);
-//
-//
-//
-//        btnSearch.setOnClickListener(view -> {
-//
-//            if ( backgroundTask.isConnectionAlive()){
-//                Intent intent = new Intent(this, ControlScreen.class);
-//
-//                intent.putExtra(EXTRA_MESSAGE, message);
-//                startActivity(intent);
-//
-//            }else{
-//                Toast.makeText(this, "Host not found, please check your device ", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        });
-//    }
+        IpText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                Log.d(TAG, "Text Change");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Constant.HOST = s.toString() ;
+//                Log.d(TAG, "Change host ot "+Constant.HOST);
+
+            }
+        });
+    }
 
 
 }
