@@ -48,6 +48,10 @@ public class Constant {
 
     public static final String STATUS_HAVE_SIM = "1" ;
 
+    public static String getCameraAddr(){
+
+        return "http://"+HOST+":8080?action=stream" ;
+    }
 
 
 }

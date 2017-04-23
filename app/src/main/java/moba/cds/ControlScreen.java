@@ -109,7 +109,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         cameraView.setDispWidth(960);
         cameraView.setDispHeight(544);
-        cameraView.setSource(Constant.CAMERA_ADD);
+        cameraView.setSource(Constant.getCameraAddr());
 
     }
 
