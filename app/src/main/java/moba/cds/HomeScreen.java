@@ -2,13 +2,16 @@ package moba.cds;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +28,11 @@ public class HomeScreen extends Activity {
     Button btnSearch ;
 
     TextView txtResponse ;
+
     private EditText IpText;
 
     class ConnectToServer extends AsyncTask<Void, Void, Void> {
 
-        Socket server = null ;// new Socket(Constant.HOST, 7769) ;
         boolean exist = false ;
         Activity context ;
 
@@ -68,8 +71,22 @@ public class HomeScreen extends Activity {
 
             }else{
                 txtResponse.setText("Connection Failure");
-                Toast.makeText(context, "Host not found, please check your device ", Toast.LENGTH_LONG).show();
 
+                TextView text = new TextView(context);
+                text.setText("Car not found, please check your device ");
+                text.setTextSize(18);
+                text.setTextColor(Color.WHITE);
+
+                LinearLayout layout = new LinearLayout(context);
+                layout.setBackgroundColor(Color.DKGRAY);
+                layout.setPadding(15, 10, 15, 10);
+                layout.addView(text);
+
+
+                Toast toast = new Toast(context);
+                toast.setView(layout);
+                toast.setGravity(Gravity.BOTTOM, 0, 250);
+                toast.show() ;
             }
         }
     }
@@ -82,7 +99,6 @@ public class HomeScreen extends Activity {
         txtResponse = (TextView)findViewById(R.id.txt_response) ;
         IpText = (EditText)findViewById(R.id.ip_text) ;
         btnSearch= (Button)findViewById(R.id.btn_connect_to_server);
-
 
         IpText.setText(Constant.HOST);
         btnSearch.setOnClickListener(view ->

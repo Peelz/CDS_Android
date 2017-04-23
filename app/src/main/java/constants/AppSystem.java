@@ -8,7 +8,7 @@ public class AppSystem {
 
     public static int CONTROL_MODE = Constant.DEFAULT_CONTROL_MODE ;
 
-    public static boolean IS_SS_CONECTION = false ;
+    public static boolean ALLOW_CHANGE_MODE = false ;
 
 
 }

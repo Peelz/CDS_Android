@@ -1,20 +1,19 @@
 package moba.cds;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
+import android.widget.ToggleButton;
 
 import com.camera.MjpegView;
 
@@ -43,7 +42,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
     Button btnSpeed,btnBreak ;
 
     //Switch
-    Switch controlModeSwitch ;
+    ToggleButton controlModeSwitch ;
 
     //Camera Display
     MjpegView cameraView;
@@ -59,8 +58,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
     //Background service
     private BackgroundTask backgroundTask ;
-    public boolean ALLOW_CHANGE_MODE = false ;
-    private PowerManager.WakeLock mWakeLock;
 
 
     @Override
@@ -86,14 +83,13 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         this.cameraView = (MjpegView) findViewById(R.id.cameraView);
 
-        this.controlModeSwitch = (Switch)findViewById(R.id.switch_control_mode);
+        this.controlModeSwitch = (ToggleButton)findViewById(R.id.switch_control_mode);
 
         //Background Thread
         backgroundTask = new BackgroundTask(ControlScreen.this);
 
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-        this.mWakeLock.acquire();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 
 
         initial() ;
@@ -102,9 +98,11 @@ public class ControlScreen extends Activity implements SensorEventListener{
     }
 
     void setCameraView(){
-        String my_url = "http://192.168.100.1:8080?action=stream";
-        String test_url1 = "http://plazacam.studentaffairs.duke.edu/axis-cgi/mjpg/video.cgi?resolution=320x240" ;
-        String test_url2 = "http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg";
+
+//        Test Url
+//        String my_url = "http://192.168.100.1:8080?action=stream";
+//        String test_url1 = "http://plazacam.studentaffairs.duke.edu/axis-cgi/mjpg/video.cgi?resolution=320x240" ;
+//        String test_url2 = "http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg";
 
 
         cameraView.setDispWidth(960);
@@ -114,6 +112,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
     }
 
     void initial(){
+
         //init
         this.max_distance = getScreenHeight()/2 ;
 
@@ -122,8 +121,19 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         setCurrentUIGear(gearN);
         setCameraView();
-        setSwitchHandler();
 
+        controlModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if(AppSystem.ALLOW_CHANGE_MODE){
+
+                buttonView.setChecked(isChecked);
+
+            }else {
+
+                backgroundTask.sendCommandData("-cm "
+                        +(isChecked ? Constant.PHONE_CONTROL_STRING : Constant.SIMSET_CONTROL_STRING));
+            }
+        });
 
     }
 
@@ -137,7 +147,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
         mSensorManager.unregisterListener(this);
 
     }
-
 
     //Rotation Sensor
     @Override
@@ -176,29 +185,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         }
     }
 
-    // Bind switch to change mode control
-    void setSwitchHandler(){
-        controlModeSwitch.setOnClickListener((View) ->{
-            String head = Constant.CMD_CHANGE_MODE ;
-            String arg = "" ;
 
-            if(ALLOW_CHANGE_MODE){
-                if( controlModeSwitch.isChecked() ){
-                    arg = Constant.PHONE_CONTROL_STRING ;
-                }else{
-                    arg =Constant.SIMSET_CONTROL_STRING ;
-                }
-                backgroundTask.sendCommandData(head+" "+arg);
-
-                Log.d(TAG, "Change mode from ui "+ALLOW_CHANGE_MODE);
-
-            }else{
-                Log.d(TAG, "Change mode from ui "+ALLOW_CHANGE_MODE);
-
-            }
-        });
-
-    }
 
     public void setControlMode(String mode){
         //Phone Control Mode
@@ -208,7 +195,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
             gearGroupLayout.setVisibility(View.VISIBLE);
             driverControlLayout.setVisibility(View.VISIBLE);
             controlModeSwitch.setChecked(true);
-            controlModeSwitch.setText("Phone");
         }
         //Sim control mode
         else if(mode.equals(Constant.SIMSET_CONTROL_STRING)){
@@ -217,7 +203,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
             gearGroupLayout.setVisibility(View.GONE);
             driverControlLayout.setVisibility(View.GONE);
             controlModeSwitch.setChecked(false);
-            controlModeSwitch.setText("Simulator");
         }
         Log.d(TAG,"Set Mode "+mode);
 
