@@ -90,10 +90,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
-
         initial() ;
-
 
     }
 
@@ -103,7 +100,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
 //        String my_url = "http://192.168.100.1:8080?action=stream";
 //        String test_url1 = "http://plazacam.studentaffairs.duke.edu/axis-cgi/mjpg/video.cgi?resolution=320x240" ;
 //        String test_url2 = "http://plazacam.studentaffairs.duke.edu/mjpg/video.mjpg";
-
 
         cameraView.setDispWidth(960);
         cameraView.setDispHeight(544);
@@ -137,6 +133,13 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        backgroundTask.stop() ;
+    }
+
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
@@ -167,13 +170,12 @@ public class ControlScreen extends Activity implements SensorEventListener{
             if (value != tmpAcc){
     //        Background Thread Send Rotate Control data
     //         Log.d(TAG, header+value);
-                 backgroundTask.sendDriverControlData(header+value);
+                backgroundTask.sendDriverControlData(header+value);
             }
 
         }
 
     }
-
 
     public int setAngle(int value){
         if(value <0 ){
@@ -184,8 +186,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
             return value ;
         }
     }
-
-
 
     public void setControlMode(String mode){
         //Phone Control Mode
@@ -235,7 +235,6 @@ public class ControlScreen extends Activity implements SensorEventListener{
             this.activeGear.setBackgroundResource(R.drawable.gear_button);
         }
     }
-
 
     View.OnTouchListener ButtonSliderControl = (view, event) -> {
         ButtonSliderHandle(view, event);

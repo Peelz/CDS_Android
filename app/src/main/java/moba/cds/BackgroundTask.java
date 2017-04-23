@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
 
+import constants.AppSystem;
 import constants.Constant;
 import socket.CommandSocket;
 import socket.DriverSocket;
@@ -28,31 +29,6 @@ public class BackgroundTask {
 
     Thread driverSocketThread = null ;
     Thread commandSocketThread = null ;
-
-
-    public Handler mHandler = new Handler(Looper.getMainLooper()){
-
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            CommandBlock command = (CommandBlock) msg.obj ;
-
-            switch (command.getHead()){
-                case (Constant.CMD_CHANGE_GEAR):
-                    changeGear(command.getArg()) ;
-                    break;
-
-                case (Constant.CMD_CHANGE_MODE):
-                    changeMode(command.getArg());
-                    break;
-                case (Constant.CMD_STATUS_CAR):
-                    upDateStatus(command.getArg());
-                    break;
-            }
-//            Log.d(TAG, "Handler done");
-        }
-    };
 
     public BackgroundTask(){
 
@@ -79,9 +55,32 @@ public class BackgroundTask {
 
     }
 
-    public void start(){
-        commandSocketThread.start();
-        driverSocketThread.start() ;
+    public Handler mHandler = new Handler(Looper.getMainLooper()){
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            CommandBlock command = (CommandBlock) msg.obj ;
+
+            switch (command.getHead()){
+                case (Constant.CMD_CHANGE_GEAR):
+                    changeGear(command.getArg()) ;
+                    break;
+
+                case (Constant.CMD_CHANGE_MODE):
+                    changeMode(command.getArg());
+                    break;
+                case (Constant.CMD_STATUS_CAR):
+                    upDateStatus(command.getArg());
+                    break;
+            }
+//            Log.d(TAG, "Handler done");
+        }
+    };
+
+    public void stop(){
+//        commandSocketThread.stop();
+//        driverSocketThread.start() ;
     }
 
     public void changeGear(String gear){
@@ -108,10 +107,10 @@ public class BackgroundTask {
     public void upDateStatus(String status){
         switch (status){
             case(Constant.STATUS_HAVE_SIM):
-                controlScreen.ALLOW_CHANGE_MODE = true ;
+                AppSystem.ALLOW_CHANGE_MODE = true ;
                 break ;
             case(Constant.STATUS_NO_SIM) :
-                controlScreen.ALLOW_CHANGE_MODE = false ;
+                AppSystem.ALLOW_CHANGE_MODE = false ;
                 break ;
         }
     }
@@ -136,9 +135,6 @@ public class BackgroundTask {
         this.controlScreen = (ControlScreen)controlScreen ;
     }
 
-    public boolean isConnectionAlive(){
-        return commandSocket.isConnect() ;
-    }
 
 
 }

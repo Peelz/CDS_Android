@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
@@ -33,9 +31,9 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 //    public final static int POSITION_LOWER_LEFT = 12;
 //    public final static int POSITION_LOWER_RIGHT = 6;
 
-    public final static int SIZE_STANDARD = 1;
-    public final static int SIZE_BEST_FIT = 4;
-    public final static int SIZE_FULLSCREEN = 8;
+//    public final static int SIZE_STANDARD = 1;
+//    public final static int SIZE_BEST_FIT = 4;
+//    public final static int SIZE_FULLSCREEN = 8;
 
     private Context context;
     private MjpegViewThread thread;
@@ -55,65 +53,67 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     public class MjpegViewThread extends AsyncTask<Void, Void, Void> {
         private SurfaceHolder mSurfaceHolder;
-        private int frameCounter = 0;
-        private long start;
-        private Bitmap ovl, bitmap;
+//        private int frameCounter = 0;
+//        private long start;
+        private Bitmap bitmap;
 
         public MjpegViewThread(SurfaceHolder surfaceHolder, Context context) {
             mSurfaceHolder = surfaceHolder;
         }
 
         private void drawCanvas(Bitmap bitmap, Canvas c) {
-            int tempx;
-            int tempy;
-            int bmw = bitmap.getWidth();
-            int bmh = bitmap.getHeight();
+//            int tempx;
+//            int tempy;
+//            int bmw = bitmap.getWidth();
+//            int bmh = bitmap.getHeight();
 
             Rect rect ;
 
             synchronized (mSurfaceHolder) {
-                // Normal mode (Phone Control)
+//                Normal mode (Phone Control)
 //                c.drawColor(overlayBackgroundColor);
                 c.drawColor(Color.BLACK);
 
                 if (CONTROL_MODE == PHONE_CONTROL ){
-                    float bmasp = (float) bmw / (float) bmh;
-                    bmw = dispWidth;
-                    bmh = (int) (dispWidth / bmasp);
-                    if (bmh > dispHeight) {
-                        bmh = dispHeight;
-                        bmw = (int) (dispHeight * bmasp);
-                    }
-                    tempx = (dispWidth / 2) - (bmw / 2);
-                    tempy = (dispHeight / 2) - (bmh / 2);
-//                    rect = new Rect(tempx, tempy, bmw + tempx, bmh + tempy);
                     rect = new Rect(0, 0, dispWidth, dispHeight);
                     c.drawBitmap(bitmap, null, rect, new Paint());
+
+//                    Old
+//                    float bmasp = (float) bmw / (float) bmh;
+//                    bmw = dispWidth;
+//                    bmh = (int) (dispWidth / bmasp);
+//                    if (bmh > dispHeight) {
+//                        bmh = dispHeight;
+//                        bmw = (int) (dispHeight * bmasp);
+//                    }
+//                    tempx = (dispWidth / 2) - (bmw / 2);
+//                    tempy = (dispHeight / 2) - (bmh / 2);
+//                    rect = new Rect(tempx, tempy, bmw + tempx, bmh + tempy);
+
                 }
 
                 // VR mode (Simulator set Control)
                 else if(CONTROL_MODE == SIMSET_CONTROL){
-                    float bmasp = (float) bmw / (float) bmh;
-                    bmw = dispWidth;
-                    bmh = (int) (dispWidth / bmasp);
-                    if (bmh > dispHeight) {
-                        bmh = dispHeight;
-                        bmw = (int) (dispHeight * bmasp);
-                    }
-                    tempx = (dispWidth / 2) - (bmw / 2);
-                    tempy = (dispHeight / 2) - (bmh / 2);
-                    rect = new Rect(0, 0, dispWidth/2, dispHeight/2);
-
                     Bitmap tmpBitmap = Bitmap.createScaledBitmap(this.bitmap, dispWidth/2, dispHeight/2, false);
 
                     c.drawBitmap(tmpBitmap, 0f, dispHeight/4 , new Paint());
                     c.drawBitmap(tmpBitmap, tmpBitmap.getWidth(), dispHeight/4 , new Paint());
+// Old
+//                    float bmasp = (float) bmw / (float) bmh;
+//                    bmw = dispWidth;
+//                    bmh = (int) (dispWidth / bmasp);
+//                    if (bmh > dispHeight) {
+//                        bmh = dispHeight;
+//                        bmw = (int) (dispHeight * bmasp);
+//                    }
+//                    tempx = (dispWidth / 2) - (bmw / 2);
+//                    tempy = (dispHeight / 2) - (bmh / 2);
+//                    rect = new Rect(0, 0, dispWidth/2, dispHeight/2);
+
                 }
             }
 
         }
-
-
 
         public void setSurfaceSize(int width, int height) {
             synchronized (mSurfaceHolder) {
@@ -125,8 +125,8 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         protected Void doInBackground(Void... params) {
 
-            PorterDuffXfermode mode = new PorterDuffXfermode(
-                    PorterDuff.Mode.DST_OVER);
+//            PorterDuffXfermode mode = new PorterDuffXfermode(
+//                    PorterDuff.Mode.DST_OVER);
             bitmap = null;
             Canvas c = null;
             boolean sucess = false;
@@ -178,7 +178,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         protected void onPreExecute() {
             Log.d(TAG, "Pre executed Thread");
-            start = System.currentTimeMillis();
+//            start = System.currentTimeMillis();
         }
 
         private void onError() {
