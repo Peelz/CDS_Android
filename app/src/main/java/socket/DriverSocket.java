@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 import constants.Constant;
@@ -20,8 +21,10 @@ public class DriverSocket implements Runnable {
     public void run() {
         try {
             socket = new Socket(Constant.HOST, 7789);
-            DataOutputStream dOut = new DataOutputStream( socket.getOutputStream());
-            dOut.writeBytes("PHONE");
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.print("PHONE");
+            out.flush();
+            Log.d(TAG,"Send Auth message");
         } catch (IOException e) {
             Log.d(TAG,"Socket Cannt connect") ;
             e.printStackTrace();
@@ -29,7 +32,9 @@ public class DriverSocket implements Runnable {
     }
 
     public void sendStringData(String data){
+
         try {
+
             DataOutputStream dOut = new DataOutputStream( socket.getOutputStream());
             dOut.writeBytes(data);
 //            dOut.flush();

@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import constants.AppSystem;
 import constants.Constant;
+import socket.CameraControlSocket;
 import socket.CommandSocket;
 import socket.DriverSocket;
 
@@ -26,19 +27,11 @@ public class BackgroundTask {
 
     DriverSocket driverSocket = null ;
     CommandSocket commandSocket = null ;
+    CameraControlSocket cameraControlSocket = null ;
 
     Thread driverSocketThread = null ;
     Thread commandSocketThread = null ;
-
-    public BackgroundTask(){
-
-        driverSocket = new DriverSocket();
-        commandSocket = new CommandSocket(BackgroundTask.this);
-
-        commandSocketThread = new Thread(commandSocket) ;
-        driverSocketThread = new Thread(driverSocket) ;
-
-    }
+    Thread cameraControlThread = null ;
 
     public BackgroundTask(ControlScreen controlScreen){
 
@@ -46,12 +39,17 @@ public class BackgroundTask {
 
         driverSocket = new DriverSocket();
         commandSocket = new CommandSocket(BackgroundTask.this);
+        cameraControlSocket = new CameraControlSocket();
+
 
         commandSocketThread = new Thread(commandSocket) ;
         driverSocketThread = new Thread(driverSocket) ;
+        cameraControlThread= new Thread(cameraControlSocket);
+
 
         commandSocketThread.start();
         driverSocketThread.start() ;
+//        cameraControlThread.start() ;
 
     }
 
@@ -121,6 +119,10 @@ public class BackgroundTask {
 
     }
 
+    public void sendCameraControlData(String msg){
+
+        cameraControlSocket.sendStringData(msg);
+    }
     public void sendDriverControlData(String str){
 
         driverSocket.sendStringData(str);

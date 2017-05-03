@@ -1,14 +1,11 @@
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape>
+        <shape android:shape="oval">
+            <solid android:color="#cacaca"/>
             <size
-                android:height="40dp"
-                android:width="40dp" />
-
-            <solid android:color="@android:color/transparent" />
+                android:width="35dp"
+                android:height="35dp"/>
         </shape>
     </item>
-    <item android:drawable="@drawable/scrubber_control_normal_holo"/>
-
 </layer-list>

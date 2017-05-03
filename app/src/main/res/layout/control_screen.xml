@@ -18,69 +18,71 @@
         android:id="@+id/cameraView"/>
 
     <RelativeLayout
-        android:layout_width="120dp"
+        android:id="@+id/gear_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/gear_layout">
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp">
 
         <!--Gear P-->
         <Button
             android:id="@+id/button_gear_P"
-            android:textColor="#fff"
-            android:text="@string/gear_P"
-            android:onClick="gearHandler"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/gear_button"
             android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/button_gear_R" />
+            android:layout_alignStart="@+id/button_gear_R"
+            android:background="@drawable/gear_button"
+            android:onClick="gearHandler"
+            android:text="@string/gear_P"
+            android:textColor="#fff" />
 
 
         <!--Gear R-->
         <Button
-            android:text="@string/gear_R"
+            android:id="@+id/button_gear_R"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:onClick="gearHandler"
-
-            android:background="@drawable/gear_button"
             android:layout_below="@+id/button_gear_P"
-            android:textColor="#fff"
-            android:id="@+id/button_gear_R"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+
+            android:layout_marginTop="10dp"
+            android:background="@drawable/gear_button"
+            android:onClick="gearHandler"
+            android:text="@string/gear_R"
+            android:textColor="#fff" />
 
         <!--Gear N-->
         <Button
             android:id="@+id/button_gear_N"
-            android:textColor="#fff"
-            android:layout_marginTop="10dp"
-            android:text="@string/gear_N"
-            android:onClick="gearHandler"
-
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/gear_button"
+            android:layout_below="@+id/button_gear_R"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/button_gear_R" />
+
+            android:layout_marginTop="10dp"
+            android:background="@drawable/gear_button"
+            android:onClick="gearHandler"
+            android:text="@string/gear_N"
+            android:textColor="#fff" />
 
         <!--Gear D-->
         <Button
             android:id="@+id/button_gear_D"
-            android:textColor="#fff"
-            android:layout_marginTop="10dp"
-            android:text="@string/gear_D"
-            android:onClick="gearHandler"
-
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/gear_button"
+            android:layout_alignStart="@+id/button_gear_N"
             android:layout_below="@+id/button_gear_N"
-            android:layout_alignStart="@+id/button_gear_N" />
+
+            android:layout_marginTop="10dp"
+            android:background="@drawable/gear_button"
+            android:onClick="gearHandler"
+            android:text="@string/gear_D"
+            android:textColor="#fff" />
 
     </RelativeLayout>
 
+    <!-- Switch mode -->
     <ToggleButton
         android:id="@+id/switch_control_mode"
         android:layout_width="100dp"
@@ -91,8 +93,8 @@
         android:checked="true"
         android:textOff=""
         android:textOn=""
-        android:layout_marginEnd="35dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"/>
 
     <RelativeLayout
         android:id="@+id/driver_control_layout"
@@ -110,9 +112,9 @@
             android:id="@+id/Speed_button"
             android:layout_width="45dp"
             android:layout_height="45dp"
-
             android:background="@drawable/circle"
             android:text="S"
+            android:textColor="#fff"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
 
@@ -120,9 +122,29 @@
             android:id="@+id/Break_button"
             android:layout_width="45dp"
             android:layout_height="45dp"
-
             android:background="@drawable/circle"
             android:text="B"
+            android:textColor="#fff"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/cam_pos_layout"
+        android:layout_width="240dp"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@+id/driver_control_layout"
+        android:layout_toEndOf="@+id/gear_layout">
+
+        <SeekBar
+            android:id="@+id/cam_pos_seeker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progressDrawable="@drawable/seeker_cam_pos_progress"
+            android:maxHeight="2dp"
+            android:thumb="@drawable/seeker_cam_pos_thumb"
+            android:max="100"
+            android:progress="50"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>

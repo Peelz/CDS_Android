@@ -20,8 +20,6 @@
             android:name=".ControlScreen"
             android:clearTaskOnLaunch="true"
             android:screenOrientation="landscape">
-
-
         </activity>
 
         <activity

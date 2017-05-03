@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 import com.camera.MjpegView;
@@ -31,6 +32,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
     // Sensor
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+    private Sensor mHeadTracking ;
 
     //
     private int tmpAcc = 0 ;
@@ -51,6 +53,9 @@ public class ControlScreen extends Activity implements SensorEventListener{
         RelativeLayout gearGroupLayout ;
         RelativeLayout driverControlLayout ;
 
+
+    SeekBar seekBarCam;
+
     //Begin Speed and Break position AxisY
     private float start_distance = 0 ;
 
@@ -59,12 +64,17 @@ public class ControlScreen extends Activity implements SensorEventListener{
     //Background service
     private BackgroundTask backgroundTask ;
 
+    // time rad/s
+    private static final float NS2S = 1.0f / 1000000000.0f;
+    private long timestamp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.control_screen);
+        Log.d(TAG, "Start Control Screen") ;
 
         this.mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
         this.gearGroupLayout = (RelativeLayout) findViewById(R.id.gear_layout);
@@ -85,6 +95,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         this.controlModeSwitch = (ToggleButton)findViewById(R.id.switch_control_mode);
 
+        this.seekBarCam = (SeekBar)findViewById(R.id.cam_pos_seeker) ;
         //Background Thread
         backgroundTask = new BackgroundTask(ControlScreen.this);
 
@@ -114,41 +125,60 @@ public class ControlScreen extends Activity implements SensorEventListener{
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mHeadTracking = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         setCurrentUIGear(gearN);
         setCameraView();
 
-        controlModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        this.seekBarCam.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-            if(AppSystem.ALLOW_CHANGE_MODE){
+                backgroundTask.sendCommandData("-cc "+progress+" ");
+            }
 
-                buttonView.setChecked(isChecked);
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
 
-            }else {
+            }
 
-                backgroundTask.sendCommandData("-cm "
-                        +(isChecked ? Constant.PHONE_CONTROL_STRING : Constant.SIMSET_CONTROL_STRING));
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
+        this.controlModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if( AppSystem.ALLOW_CHANGE_MODE == false ){
+
+                buttonView.setChecked(!isChecked);
+//                Log.d(TAG, "Not change mode "+AppSystem.ALLOW_CHANGE_MODE);
+
+            }else {
+
+                String msg = (isChecked ? Constant.PHONE_CONTROL_STRING : Constant.SIMSET_CONTROL_STRING);
+                backgroundTask.sendCommandData("-cm "+ msg);
+//                Log.d(TAG, "Send command " + msg);
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         backgroundTask.stop() ;
     }
 
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mHeadTracking, SensorManager.SENSOR_DELAY_GAME);
     }
 
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
-
     }
 
     //Rotation Sensor
@@ -159,22 +189,40 @@ public class ControlScreen extends Activity implements SensorEventListener{
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            float aX= event.values[0];
-            float aY= event.values[1];
-            int angle = (int) (Math.atan2(aY,aX)/(Math.PI/180)) ;
+        switch (AppSystem.CONTROL_MODE){
 
-            String header = "t";
+            case Constant.PHONE_CONTROL :
+                if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                    float aX= event.values[0];
+                    float aY= event.values[1];
+                    int angle = (int) (Math.atan2(aY,aX)/(Math.PI/180)*1.333) ;
 
-            int value = setAngle(angle+90) ;
-            if (value != tmpAcc){
-    //        Background Thread Send Rotate Control data
-    //         Log.d(TAG, header+value);
-                backgroundTask.sendDriverControlData(header+value);
-            }
 
+                    int value = setAngle(angle+90) ;
+                    if (value != tmpAcc){
+                        //        Background Thread Send Rotate Control data
+                        //         Log.d(TAG, header+value);
+                        backgroundTask.sendDriverControlData("t"+value);
+                    }
+                }
+                break;
+
+            case Constant.SIMSET_CONTROL :
+                if (event.sensor.getType()== Sensor.TYPE_GYROSCOPE){
+                    if (timestamp != 0) {
+                        final float dT = (event.timestamp - timestamp) * NS2S;
+                        float x = event.values[0];
+
+                        if (x != 0.0 ){
+                            backgroundTask.sendCommandData("-cc "+String.format("%.3f",x*dT)+" ");
+//                            Log.d(TAG, String.format("%.3f",x*dT));
+                        }
+                    }
+                    timestamp= event.timestamp;
+                }
+
+                break ;
         }
-
     }
 
     public int setAngle(int value){
@@ -192,17 +240,19 @@ public class ControlScreen extends Activity implements SensorEventListener{
         if(mode.equals(Constant.PHONE_CONTROL_STRING)){
 
             AppSystem.CONTROL_MODE = 0 ;
-            gearGroupLayout.setVisibility(View.VISIBLE);
-            driverControlLayout.setVisibility(View.VISIBLE);
-            controlModeSwitch.setChecked(true);
+            this.gearGroupLayout.setVisibility(View.VISIBLE);
+            this.driverControlLayout.setVisibility(View.VISIBLE);
+            this.seekBarCam.setVisibility(View.VISIBLE);
+            this.controlModeSwitch.setChecked(true);
         }
         //Sim control mode
         else if(mode.equals(Constant.SIMSET_CONTROL_STRING)){
 
             AppSystem.CONTROL_MODE = 1 ;
-            gearGroupLayout.setVisibility(View.GONE);
-            driverControlLayout.setVisibility(View.GONE);
-            controlModeSwitch.setChecked(false);
+            this.gearGroupLayout.setVisibility(View.GONE);
+            this.driverControlLayout.setVisibility(View.GONE);
+            this.seekBarCam.setVisibility(View.GONE);
+            this.controlModeSwitch.setChecked(false);
         }
         Log.d(TAG,"Set Mode "+mode);
 

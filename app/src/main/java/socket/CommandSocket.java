@@ -88,12 +88,12 @@ public class CommandSocket implements Runnable {
     public void sendStringData(String data){
         try {
             DataOutputStream dOut = new DataOutputStream( socket.getOutputStream());
-            Log.d(TAG, "Sent "+dOut);
+            Log.d(TAG, "Sent "+data);
             dOut.writeBytes(data);
 
 
         } catch (IOException e) {
-            Log.d("Driver socket", "Data not sent");
+            Log.d(TAG, "Data not sent");
         }
     }
 

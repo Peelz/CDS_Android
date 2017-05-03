@@ -21,13 +21,14 @@ import java.net.Socket;
 
 import constants.Constant;
 
-public class HomeScreen extends Activity {
+public class HomeScreen extends Activity{
 
     String TAG = "HomeScreen";
 
     Button btnSearch ;
 
     TextView txtResponse ;
+
 
     private EditText IpText;
 
@@ -120,7 +121,6 @@ public class HomeScreen extends Activity {
             public void afterTextChanged(Editable s) {
                 Constant.HOST = s.toString() ;
 //                Log.d(TAG, "Change host ot "+Constant.HOST);
-
             }
         });
     }

@@ -15,6 +15,8 @@ public class Constant {
 
     final static int SOCKET_DRIVER_PORT = 7789 ;
 
+    final static int SOCKET_CAMERA_CONTROL_PORT = 7779 ;
+
     //
     public final static int DEFAULT_CONTROL_MODE = 0 ;
 
