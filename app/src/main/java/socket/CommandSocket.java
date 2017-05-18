@@ -93,7 +93,7 @@ public class CommandSocket implements Runnable {
 
 
         } catch (IOException e) {
-            Log.d(TAG, "Data not sent");
+            Log.d(TAG, "Data not sent "+e.getMessage());
         }
     }
 

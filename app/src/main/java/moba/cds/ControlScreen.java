@@ -134,7 +134,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                backgroundTask.sendCommandData("-cc "+progress+" ");
+                backgroundTask.sendCommandData("-ccp "+progress+" ");
             }
 
             @Override
@@ -240,7 +240,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         if(mode.equals(Constant.PHONE_CONTROL_STRING)){
 
             AppSystem.CONTROL_MODE = 0 ;
-            this.gearGroupLayout.setVisibility(View.VISIBLE);
+            this.gearGroupLayout.setAlpha(1);
             this.driverControlLayout.setVisibility(View.VISIBLE);
             this.seekBarCam.setVisibility(View.VISIBLE);
             this.controlModeSwitch.setChecked(true);
@@ -249,7 +249,7 @@ public class ControlScreen extends Activity implements SensorEventListener{
         else if(mode.equals(Constant.SIMSET_CONTROL_STRING)){
 
             AppSystem.CONTROL_MODE = 1 ;
-            this.gearGroupLayout.setVisibility(View.GONE);
+            this.gearGroupLayout.setAlpha( 0.5F );
             this.driverControlLayout.setVisibility(View.GONE);
             this.seekBarCam.setVisibility(View.GONE);
             this.controlModeSwitch.setChecked(false);

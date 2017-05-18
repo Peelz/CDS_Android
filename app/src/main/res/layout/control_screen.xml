@@ -143,8 +143,8 @@
             android:progressDrawable="@drawable/seeker_cam_pos_progress"
             android:maxHeight="2dp"
             android:thumb="@drawable/seeker_cam_pos_thumb"
-            android:max="100"
-            android:progress="50"
+            android:max="180"
+            android:progress="90"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>

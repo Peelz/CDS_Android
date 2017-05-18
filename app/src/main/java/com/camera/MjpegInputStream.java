@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Properties;
 /**
+ *
  * Created by gutte on 4/16/2017.
  */
 

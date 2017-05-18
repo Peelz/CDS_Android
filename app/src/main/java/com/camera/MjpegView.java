@@ -26,26 +26,14 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "MjpegView";
 
-//    public final static int POSITION_UPPER_LEFT = 9;
-//    public final static int POSITION_UPPER_RIGHT = 3;
-//    public final static int POSITION_LOWER_LEFT = 12;
-//    public final static int POSITION_LOWER_RIGHT = 6;
-
-//    public final static int SIZE_STANDARD = 1;
-//    public final static int SIZE_BEST_FIT = 4;
-//    public final static int SIZE_FULLSCREEN = 8;
 
     private Context context;
     private MjpegViewThread thread;
     private MjpegInputStream mIn = null;
-//    private boolean showFps = false;
     private boolean mRun = false;
     private boolean surfaceDone = false;
     private boolean viewing = false;
-//    private Paint overlayPaint;
-//    private int overlayTextColor;
-//    private int overlayBackgroundColor;
-//    private int ovlPos;
+
     private int dispWidth;
     private int dispHeight;
     private ImjpegViewListener listener;
@@ -53,8 +41,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     public class MjpegViewThread extends AsyncTask<Void, Void, Void> {
         private SurfaceHolder mSurfaceHolder;
-//        private int frameCounter = 0;
-//        private long start;
+
         private Bitmap bitmap;
 
         public MjpegViewThread(SurfaceHolder surfaceHolder, Context context) {
@@ -62,33 +49,17 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void drawCanvas(Bitmap bitmap, Canvas c) {
-//            int tempx;
-//            int tempy;
-//            int bmw = bitmap.getWidth();
-//            int bmh = bitmap.getHeight();
 
             Rect rect ;
 
             synchronized (mSurfaceHolder) {
-//                Normal mode (Phone Control)
-//                c.drawColor(overlayBackgroundColor);
+
                 c.drawColor(Color.BLACK);
 
+                // Normal mode
                 if (CONTROL_MODE == PHONE_CONTROL ){
                     rect = new Rect(0, 0, dispWidth, dispHeight);
                     c.drawBitmap(bitmap, null, rect, new Paint());
-
-//                    Old
-//                    float bmasp = (float) bmw / (float) bmh;
-//                    bmw = dispWidth;
-//                    bmh = (int) (dispWidth / bmasp);
-//                    if (bmh > dispHeight) {
-//                        bmh = dispHeight;
-//                        bmw = (int) (dispHeight * bmasp);
-//                    }
-//                    tempx = (dispWidth / 2) - (bmw / 2);
-//                    tempy = (dispHeight / 2) - (bmh / 2);
-//                    rect = new Rect(tempx, tempy, bmw + tempx, bmh + tempy);
 
                 }
 
@@ -98,17 +69,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
                     c.drawBitmap(tmpBitmap, 0f, dispHeight/4 , new Paint());
                     c.drawBitmap(tmpBitmap, tmpBitmap.getWidth(), dispHeight/4 , new Paint());
-// Old
-//                    float bmasp = (float) bmw / (float) bmh;
-//                    bmw = dispWidth;
-//                    bmh = (int) (dispWidth / bmasp);
-//                    if (bmh > dispHeight) {
-//                        bmh = dispHeight;
-//                        bmw = (int) (dispHeight * bmasp);
-//                    }
-//                    tempx = (dispWidth / 2) - (bmw / 2);
-//                    tempy = (dispHeight / 2) - (bmh / 2);
-//                    rect = new Rect(0, 0, dispWidth/2, dispHeight/2);
 
                 }
             }
@@ -125,8 +85,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         protected Void doInBackground(Void... params) {
 
-//            PorterDuffXfermode mode = new PorterDuffXfermode(
-//                    PorterDuff.Mode.DST_OVER);
             bitmap = null;
             Canvas c = null;
             boolean sucess = false;
@@ -178,7 +136,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         protected void onPreExecute() {
             Log.d(TAG, "Pre executed Thread");
-//            start = System.currentTimeMillis();
         }
 
         private void onError() {
@@ -266,26 +223,6 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
             startPlayback();
         }
     }
-//
-//    public void setOverlayPaint(Paint p) {
-//        overlayPaint = p;
-//    }
-
-//    public void setOverlayTextColor(int c) {
-//        overlayTextColor = c;
-//    }
-//
-//    public void setOverlayBackgroundColor(int c) {
-//        overlayBackgroundColor = c;
-//    }
-//
-//    public void setOverlayPosition(int p) {
-//        ovlPos = p;
-//    }
-//
-//    public void setDisplayMode(int s) {
-//        displayMode = s;
-//    }
 
     public void setDispWidth(int dispWidth) {
         this.dispWidth = dispWidth;
@@ -306,24 +243,5 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
     public void destroy() {
         stopPlayback();
     }
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        boolean executed = false;
-//        int action = event.getAction();
-//        switch (action) {
-//            case MotionEvent.ACTION_DOWN:
-//                Log.d(TAG, "Touched!!!");
-//                Bitmap bm = thread.getBitmap();
-//                if(listener!=null)
-//                    listener.hasBitmap(bm);
-//                executed = true;
-//                break;
-//
-//            default:
-//                break;
-//        }
-//        return executed;
-//    }
 
 }
